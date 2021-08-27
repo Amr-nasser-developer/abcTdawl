@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +18,13 @@ class RecommendationsScreen extends StatelessWidget {
       listener: (context, state){},
         builder: (context, state){
         var reco = TradeCubit.get(context);
+        var token = CashHelper.getData(key: 'loginToken');
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Scaffold(
             key: _scaffoldKey,
             appBar: defaultHomeAppBar(
+              token: token,
                 context: context,
                 text: ' توصيات $name',
                 scaffoldKey: _scaffoldKey

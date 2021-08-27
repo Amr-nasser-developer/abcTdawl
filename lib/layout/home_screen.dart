@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,12 +17,14 @@ class HomeScreen extends StatelessWidget {
       child: BlocConsumer<TradeHomeCubit, TradeHomeState>(
         listener: (context, state){},
         builder: (context, state){
+          var token = CashHelper.getData(key: 'loginToken');
           var trade = TradeHomeCubit.get(context);
           return Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
               key: _scaffoldKey,
               appBar: defaultHomeAppBar(
+                token: token,
                   context: context,
                   text: trade.title[trade.currentIndex],
                   scaffoldKey: _scaffoldKey

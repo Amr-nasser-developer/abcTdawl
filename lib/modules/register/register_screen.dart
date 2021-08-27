@@ -57,12 +57,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
       builder: (context, state){
           var qouta = TradeCubit.get(context);
+          var token = CashHelper.getData(key: 'loginToken');
           return Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
               key: _scaffoldKey,
               drawer: defaultDrawer(context: context),
               appBar: defaultHomeAppBar(
+                token: token,
                 context: context,
                   scaffoldKey: _scaffoldKey,
                   text: 'إشتراك'
@@ -271,18 +273,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        package: _mySelectionQouta,
                                    );
 
-                                   if(state is TradeRegisterSuccess){
+                                   if(TradeCubit.get(context).registers!.status != 0){
                                      TradeCubit.get(context).saveDeviceToken(
                                        device_id: qouta.register(),
                                        user_id: qouta.register().userIdApi
                                      );
-                                     if(state is TradeRegisterSuccess && state is TradeSaveDeviceTokenSuccess){
-                                       qouta.registerFirebase(
-                                         password: passwordController.text,
-                                         email: emailController.text,
-                                       );
-                                     }
-
+                                   }
+                                   if(TradeCubit.get(context).registers!.status != 0 && state is TradeSaveDeviceTokenSuccess){
+                                     qouta.registerFirebase(
+                                       password: passwordController.text,
+                                       email: emailController.text,
+                                     );
                                    }
                                  }
                                  print(_mySelectionQouta);

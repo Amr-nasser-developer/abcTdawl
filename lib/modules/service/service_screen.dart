@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,12 +16,14 @@ class ServiceScreen extends StatelessWidget {
       builder: (context, state){
         var width = MediaQuery.of(context).size.width;
        var service = TradeCubit.get(context);
+        var token = CashHelper.getData(key: 'loginToken');
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Scaffold(
             drawer: defaultDrawer(context: context),
             key: _scaffoldKey,
             appBar: defaultHomeAppBar(
+              token: token,
                 text: 'خدامتنا',
                 context: context,
                 scaffoldKey: _scaffoldKey

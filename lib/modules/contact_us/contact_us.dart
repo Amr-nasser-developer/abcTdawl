@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -18,11 +19,13 @@ class ContactUsScreen extends StatelessWidget {
     return BlocConsumer<TradeCubit, TradeStates>(
         listener: (context, state){},
       builder: (context, state){
+        var token = CashHelper.getData(key: 'loginToken');
           return Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
               key: _scaffoldKey,
               appBar: defaultHomeAppBar(
+                token: token,
                 context: context,
                 text: 'تواصل معنا',
                 scaffoldKey: _scaffoldKey

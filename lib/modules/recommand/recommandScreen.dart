@@ -16,11 +16,13 @@ class RecommandScreen extends StatelessWidget {
     return BlocConsumer<TradeCubit, TradeStates>(
       listener: (context, state){},
       builder: (context, state){
+        var token = CashHelper.getData(key: 'loginToken');
        var recommand = TradeCubit.get(context);
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Scaffold(
             appBar: defaultHomeAppBar(
+              token: token,
                 context: context,
                 scaffoldKey: _scaffoldKey,
                 text: 'التوصيات'

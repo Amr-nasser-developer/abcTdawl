@@ -15,7 +15,6 @@ import 'package:abc_trade/modules/performance/performance_screen.dart';
 import 'package:abc_trade/modules/service/service_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-var token = CashHelper.getData(key: 'loginToken');
 void defaultNavigateTo({context, widget}) {
   Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
 }
@@ -417,7 +416,7 @@ Widget defaultMaterialButton({function, text, bool login = false }) => Container
         ),
       ),
     );
-defaultHomeAppBar({text, scaffoldKey, context}) => AppBar(
+defaultHomeAppBar({text, scaffoldKey, context, token}) => AppBar(
       leading: IconButton(
           onPressed: () {
             scaffoldKey.currentState.openDrawer();

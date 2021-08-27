@@ -18,11 +18,11 @@ import 'package:abc_trade/modules/service/service_screen.dart';
 import 'package:abc_trade/shared/components.dart';
 
 class MainScreen extends StatelessWidget {
-  List<dynamic> photo = [
-    'assets/images/slider1.jpg',
-    'assets/images/slider2.jpg',
-    'assets/images/slider3.jpg',
-  ];
+  // List<dynamic> photo = [
+  //   'assets/images/slider1.jpg',
+  //   'assets/images/slider2.jpg',
+  //   'assets/images/slider3.jpg',
+  // ];
   var token = CashHelper.getData(key: 'loginToken');
   @override
   Widget build(BuildContext context) {
@@ -49,47 +49,47 @@ class MainScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Container(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15.0),
-                            child: CarouselSlider(
-                              items: photo
-                                  .map(
-                                    (e) => Builder(builder: (context) {
+                        ConditionalBuilder(
+                            condition: state is! TradeSliderLoading,
+                            builder: (context)=> Container(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: CarouselSlider(
+                                  items: TradeCubit.get(context).slider
+                                      .map(
+                                        (e) => Builder(builder: (context) {
                                       return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: HexColor('#00AEAC'),
-                                                spreadRadius: 0,
-                                                blurRadius: 0),
-                                          ],
-                                        ),
-                                        child: Image(
-                                          image: AssetImage(e),
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                        ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(15.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: HexColor('#00AEAC'),
+                                                  spreadRadius: 0,
+                                                  blurRadius: 0),
+                                            ],
+                                          ),
+                                          child: Image.network('http://abctdawl.com/storage/app/${e['image']}',fit: BoxFit.cover, width: double.infinity,)
                                       );
                                     }),
                                   )
-                                  .toList(),
-                              options: CarouselOptions(
-                                // autoPlayCurve: Curves.easeInCirc,
-                                autoPlayInterval: Duration(seconds: 3),
-                                autoPlayAnimationDuration:
+                                      .toList(),
+                                  options: CarouselOptions(
+                                    // autoPlayCurve: Curves.easeInCirc,
+                                    autoPlayInterval: Duration(seconds: 3),
+                                    autoPlayAnimationDuration:
                                     Duration(milliseconds: 1200),
-                                reverse: false,
-                                viewportFraction: 1,
-                                aspectRatio: 2,
-                                enlargeCenterPage: true,
-                                scrollDirection: Axis.horizontal,
-                                autoPlay: true,
+                                    reverse: false,
+                                    viewportFraction: 1,
+                                    aspectRatio: 2,
+                                    enlargeCenterPage: true,
+                                    scrollDirection: Axis.horizontal,
+                                    autoPlay: true,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          fallback: (context)=> Center(child: CircularProgressIndicator(),),
                         ),
                         SizedBox(
                           height: 15.0,

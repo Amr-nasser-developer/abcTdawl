@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,12 +25,14 @@ class _FreeSubscriptionState extends State<FreeSubscription> {
     return BlocConsumer<TradeCubit, TradeStates>(
         listener: (context, state){},
       builder: (context, state){
+        var token = CashHelper.getData(key: 'loginToken');
           return Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
               key: _scaffoldKey,
               drawer: defaultDrawer(context: context),
               appBar: defaultHomeAppBar(
+                token: token,
                   context: context,
                   text: 'اشتراك مجانى',
                   scaffoldKey: _scaffoldKey

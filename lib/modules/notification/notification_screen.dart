@@ -21,6 +21,7 @@ class NotificationScreen extends StatelessWidget {
             }
           },
       builder: (context, state){
+            var width = MediaQuery.of(context).size.width;
             return Scaffold(
                 key: _scaffoldKey,
                 drawer: defaultDrawer(context: context),
@@ -57,7 +58,7 @@ class NotificationScreen extends StatelessWidget {
                                     itemBuilder: (context, index)=> defaultbuildNotification(
                                         sourceImage: 'assets/images/noti.png',
                                         noti: TradeCubit.get(context).notification![index],
-                                      id: TradeCubit.get(context).notificationId,
+                                      width : width,
                                         context :context
                                     ) ,
                                     separatorBuilder: (context, index)=> SizedBox(height: 10,),
@@ -76,7 +77,7 @@ class NotificationScreen extends StatelessWidget {
       ),
     );
   }
-  Widget defaultbuildNotification({sourceImage, noti,id, context}) => Container(
+  Widget defaultbuildNotification({sourceImage, noti,width, context}) => Container(
     padding: EdgeInsets.symmetric(horizontal: 10.0),
     height: 75.0,
     decoration: BoxDecoration(
@@ -85,13 +86,7 @@ class NotificationScreen extends StatelessWidget {
           color: HexColor('#00AEAC'),
         )),
     child: Row(
-      children: [Image.asset(sourceImage), Spacer(), Text('${noti['body']}'),Spacer(),
-      IconButton(
-          onPressed: (){
-            FirebaseFirestore.instance.collection('notification').doc(id).delete();
-          },
-          icon: Icon(Icons.delete)
-      )
+      children: [Image.asset(sourceImage), SizedBox(width: width * 0.1 ,), Text('${noti['body']}',maxLines: 1,overflow: TextOverflow.ellipsis, )
       ],
     ),
   );

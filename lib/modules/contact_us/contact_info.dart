@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,8 @@ class ContactInfoScreen extends StatelessWidget {
     return BlocConsumer<TradeCubit, TradeStates>(
         listener: (context, state){},
       builder: (context, state){
-          var width = MediaQuery.of(context).size.width;
+        var token = CashHelper.getData(key: 'loginToken');
+        var width = MediaQuery.of(context).size.width;
           var contactInfo = TradeCubit.get(context);
           return Directionality(
             textDirection: TextDirection.rtl,
@@ -24,6 +26,7 @@ class ContactInfoScreen extends StatelessWidget {
                 context: context
               ),
               appBar: defaultHomeAppBar(
+                token: token,
                 context: context,
                 text: 'من نحن',
                 scaffoldKey: _scaffoldKey

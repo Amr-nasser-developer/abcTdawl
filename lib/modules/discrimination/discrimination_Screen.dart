@@ -1,9 +1,10 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:abc_trade/shared/components.dart';
 
 class DiscriminationScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  var token = CashHelper.getData(key: 'loginToken');
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -14,6 +15,7 @@ class DiscriminationScreen extends StatelessWidget {
           context: context
         ),
         appBar: defaultHomeAppBar(
+          token: token,
           context: context,
           text: 'ما يميزنا',
           scaffoldKey: _scaffoldKey
