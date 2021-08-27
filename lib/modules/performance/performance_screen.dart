@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,26 +15,29 @@ class PerformanceRateScreen extends StatefulWidget {
 }
 
 class _PerformanceRateScreenState extends State<PerformanceRateScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String? _mySelectionYear;
   GlobalKey<dynamic> dropBottonKeyYear= GlobalKey();
   String? _mySelectionMonth;
   GlobalKey<dynamic> dropBottonKeyMonth= GlobalKey();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TradeCubit, TradeStates>(
         listener: (context, state){},
       builder: (context, state){
+        List months = ['1','2','3','4','5','6','7','8','9','10','11','12'];
         var width = MediaQuery.of(context).size.width;
         var year = TradeCubit.get(context);
-        var month = TradeCubit.get(context);
         var perfor = TradeCubit.get(context);
+        var token = CashHelper.getData(key: 'loginToken');
           return Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
               key: _scaffoldKey,
               drawer: defaultDrawer(context: context),
               appBar: defaultHomeAppBar(
+                token: token,
                 context: context,
                 scaffoldKey: _scaffoldKey,
                 text: 'معدل الأداء',
@@ -55,7 +59,7 @@ class _PerformanceRateScreenState extends State<PerformanceRateScreen> {
                           }).toList(),
                           function: (newVal) {
                             setState(() {
-                              _mySelectionYear = newVal as String;
+                              _mySelectionYear = newVal;
                             });
                           },
                           value: _mySelectionYear
@@ -64,7 +68,7 @@ class _PerformanceRateScreenState extends State<PerformanceRateScreen> {
                       defaultDropButton(
                           hint: 'الشهر',
                           key: dropBottonKeyMonth,
-                          listItem: month.evaluationMonth.map((item) {
+                          listItem: months.map((item) {
                             return new DropdownMenuItem(
                               child: new Text(item),
                               value: item,
@@ -80,14 +84,27 @@ class _PerformanceRateScreenState extends State<PerformanceRateScreen> {
                       SizedBox(height: 5,),
                       defaultMaterialButton(
                           text: 'بحث',
-                          function: (){}
+                          function: (){
+                            print(_mySelectionMonth);
+                            TradeCubit.get(context).getEvaluationShort(
+                              year: _mySelectionYear,
+                              month: _mySelectionMonth,
+                              CreateInvoiceSuccess: true
+                            );
+                          print(_mySelectionMonth);
+                            print(_mySelectionYear);
+                          }
                       ),
                       SizedBox(height: 15.0,),
                       ConditionalBuilder(
                         condition: state is! TradePerformanceShortError,
                         builder: (context) => ConditionalBuilder(
                           condition: perfor.rate != null,
-                          builder: (context) => defaultBuildDataDetails(context: context, width: width),
+                          builder: (context) => ConditionalBuilder(
+                              condition: state is! TradePerformanceShortLoading,
+                              builder: (context) =>  defaultBuildDataDetails(context: context, width: width),
+                          fallback: (context)=> Center(child: CircularProgressIndicator(),),
+                          ),
                           fallback: (context) => Center(
                             child: CircularProgressIndicator(),
                           ),
@@ -102,38 +119,45 @@ class _PerformanceRateScreenState extends State<PerformanceRateScreen> {
                         condition: state is! TradePerformanceShortError,
                         builder: (context) => ConditionalBuilder(
                           condition: perfor.rate != null,
-                          builder: (context) => Column(
-                            children: [
-                              ListView.separated(
-                                shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
-                                  itemBuilder: (context, index)=> defaultBuildPerformanceShort(
-                                      TradeCubit.get(context).evaluationShort[index]
+                          builder: (context) => ConditionalBuilder(
+                              condition: state is! TradePerformanceShortLoading,
+                              builder: (context)=> Column(
+                                children: [
+                                  ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: BouncingScrollPhysics(),
+                                      itemBuilder: (context, index)=> defaultBuildPerformanceShort(
+                                          TradeCubit.get(context).evaluationShort[index]
+                                      ),
+                                      separatorBuilder: (context, index)=> SizedBox(height: 5.0,),
+                                      itemCount: TradeCubit.get(context).evaluationShort.length
                                   ),
-                                  separatorBuilder: (context, index)=> SizedBox(height: 5.0,),
-                                  itemCount: TradeCubit.get(context).evaluationShort.length
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              Stack(
-                                alignment: Alignment.center,
-                                children:
-                                [
-                                  Container(),
-                                  if(state is! TradePerformanceShortMoreLoading && perfor.currentPageShort <= perfor.totalPageShort)
-                                    defaultMaterialButtonBag(
-                                      function: ()
-                                      {
-                                        if(perfor.currentPageShort <= perfor.totalPageShort)
-                                          perfor.getEvaluationShortMore();
-                                      },
-                                    ),
-                                  if(state is TradePerformanceShortMoreLoading)
-                                    CircularProgressIndicator(),
+                                  SizedBox(
+                                    height: 20.0,
+                                  ),
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children:
+                                    [
+                                      Container(),
+                                      if(state is! TradePerformanceShortMoreLoading && perfor.currentPageShort <= perfor.totalPageShort)
+                                        defaultMaterialButtonBag(
+                                          function: ()
+                                          {
+                                            if(perfor.currentPageShort <= perfor.totalPageShort)
+                                              perfor.getEvaluationShortMore(
+                                                  month: _mySelectionMonth,
+                                                year: _mySelectionYear
+                                              );
+                                          },
+                                        ),
+                                      if(state is TradePerformanceShortMoreLoading)
+                                        CircularProgressIndicator(),
+                                    ],
+                                  ),
                                 ],
                               ),
-                            ],
+                          fallback: (context)=> Center(child: CircularProgressIndicator(),),
                           ),
                           fallback: (context) => Center(
                             child: CircularProgressIndicator(),

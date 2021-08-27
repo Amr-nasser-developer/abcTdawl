@@ -89,7 +89,7 @@ class PackageScreen extends StatelessWidget {
                     child:
                     (package['image'] == 0 )?
                     Container() :
-                    Image.network('http://abctdawl.com/storage/app/public/reports-imgs/${package['image']}', fit: BoxFit.fill,)
+                    Image.network('http://abctdawl.com/storage/app/${package['image']}', fit: BoxFit.fill,)
                 ),
               ),
             ),

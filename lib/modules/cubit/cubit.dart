@@ -1,3 +1,4 @@
+import 'package:abc_trade/model/user_token.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -12,6 +13,19 @@ import 'package:abc_trade/shared/remote/dio_helper.dart';
 class TradeCubit extends Cubit<TradeStates>{
   TradeCubit() : super(TradeInitial());
   static TradeCubit get(context) => BlocProvider.of(context);
+  List<dynamic> slider = [];
+  getSlider(){
+    emit(TradeSliderLoading());
+    DioHelper.getData(
+        url: 'sliders'
+    ).then((value){
+      emit(TradeSliderSuccess());
+      slider = value.data['SLIDERS'];
+    }).catchError((e){
+      emit(TradeSliderError(e.toString()));
+      print(e.toString());
+    });
+  }
 
   List<dynamic> packages = [];
   getPackage(){
@@ -211,35 +225,43 @@ class TradeCubit extends Cubit<TradeStates>{
   int currentPageShort = 1;
   int totalPageShort = 0;
   Rate? rate;
-  getEvaluationShort(){
+  getEvaluationShort({bool CreateInvoiceSuccess = false, month, year}){
+    if(CreateInvoiceSuccess == true){
+      currentPageShort = 1;
+    }
     emit(TradePerformanceShortLoading());
     DioHelper.getData(
       query: {
+        'month': month,
+        'year' : year,
         'page' : currentPageShort,
-        'per_page' : 20
+        'per_page' : 15
       },
       url: 'evaluation/short',
     ).then((value){
       emit(TradePerformanceShortSuccess());
-      evaluationShort = value.data['DATA']['recommendations'];
+      evaluationShort = value.data['DATA']['recommendations']['data'];
       rate = Rate.fromJson(value.data);
       currentPageShort++;
-      totalPageShort = value.data['DATA']['recommendations_all'];
+      totalPageShort = value.data['DATA']['recommendations']['last_page'];
     }).catchError((e){
       print(e.toString());
       emit(TradePerformanceShortError(e.toString()));
     });
   }
-  getEvaluationShortMore(){
+  getEvaluationShortMore({month, year}){
     emit(TradePerformanceShortMoreLoading());
     DioHelper.getData(
       query: {
+        'month': month,
+        'year' : year,
         'page' : currentPageShort,
+        'per_page' : 15
       },
       url: 'evaluation/short',
     ).then((value){
       emit(TradePerformanceShortMoreSuccess());
-      evaluationShort.addAll( value.data['DATA']['recommendations']);
+      evaluationShort.addAll(value.data['DATA']['recommendations']['data']);
       currentPageShort++;
     }).catchError((e){
       print(e.toString());
@@ -262,15 +284,13 @@ class TradeCubit extends Cubit<TradeStates>{
         password: password
       );
       emit(TradeLoginSuccess());
-      print(value.data);
+      print('Value => ${value.data}');
     }).catchError((e){
       print(e.toString());
       emit(TradeLoginError(e.toString()));
     });
   }
-  getToken()async{
-    await FirebaseMessaging.instance.getToken();
-  }
+
   loginFirebase({email , password}) async{
     emit(TradeLoginFirebaseLoading());
     FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password).then((value){
@@ -315,27 +335,49 @@ class TradeCubit extends Cubit<TradeStates>{
           'member_type' : 'r'
         }
     ).then((value){
+      emit(TradeRegisterSuccess());
       registers = Register.fromJson(value.data);
-      FirebaseFirestore.instance.collection('user').add({
-        'email': email,
-      }).then((value){
-        print('Firebase Save Success');
-        var firebase = value.id;
-        print(firebase);
-         CashHelper.setData(key: 'userIdFirebase', value: firebase);
-         saveDeviceToken(
-           device_id: value.id,
-           user_id:registers!.user!.id
-         );
-        registerFirebase(
-          email: email,
-          password: password
-        );
-        emit(TradeRegisterSuccess());
-      }).catchError((e){
-        emit(TradeRegisterError(e.toString()));
-      });
+      var token = CashHelper.setData(key: registers!.user!.token, value: 'registerToken');
+      if(token != null){
+        FirebaseFirestore.instance.collection('user').add({
+          'email': email,
+        }).then((value){
+          print('Firebase Save Success');
+          var firebase = value.id;
+          print(firebase);
+          CashHelper.setData(key: 'userIdFirebase', value: firebase);
+          saveDeviceToken(
+              device_id: value.id,
+              user_id:registers!.user!.id
+          );
+          registerFirebase(
+              email: email,
+              password: password
+          );
+        }).catchError((e){
+          emit(TradeRegisterError(e.toString()));
+        });
+      }else{
+        return null;
+      }
     }).catchError((e) {
+      print(e.toString());
+    });
+  }
+  TokenNoti? tokenNoti;
+  getUserToken(){
+    emit(TradeGetUserTokenLoading());
+    DioHelper.getData(
+        url: 'notification/get',
+      query: {
+          'id' : login!.user!.id
+      }
+    ).then((value){
+      emit(TradeGetUserTokenSuccess());
+      tokenNoti = TokenNoti.fromJson(value.data);
+      print(value.data);
+    }).catchError((e){
+      emit(TradeGetUserTokenError(e.toString()));
       print(e.toString());
     });
   }
@@ -367,7 +409,6 @@ class TradeCubit extends Cubit<TradeStates>{
     });
   }
    var id ;
-
   postNotificationData({event, formate}){
     emit(TradePostNotificationLoading());
     FirebaseFirestore.instance.collection('notification').add({
@@ -376,6 +417,7 @@ class TradeCubit extends Cubit<TradeStates>{
       'time' : formate
     }).then((value){
       id = value.id;
+      getNotification();
       emit(TradePostNotificationSuccess());
       print('save post notification');
     }).catchError((e){
@@ -390,7 +432,7 @@ class TradeCubit extends Cubit<TradeStates>{
     emit(TradeGetNotificationLoading());
     FirebaseFirestore.instance
         .collection('notification')
-        .orderBy('time')
+        .orderBy('time',descending: true)
         .get()
         .then((QuerySnapshot querySnapshot){
       querySnapshot.docs.forEach((doc) {

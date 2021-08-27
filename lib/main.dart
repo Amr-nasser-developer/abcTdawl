@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -9,68 +11,58 @@ import 'package:abc_trade/shared/obServerCubit.dart';
 import 'package:abc_trade/shared/remote/dio_helper.dart';
 import 'package:abc_trade/view/splash_screen.dart';
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async
-{
-  print('on background message');
-  Fluttertoast.showToast(
-      msg: 'New Notification',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 3,
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      fontSize: 16.0);
-
-}
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
   await CashHelper.init();
   Bloc.observer = MyBlocObserver();
   var dateTime = DateTime.now();
-  var formate = "${dateTime.day}-${dateTime.month}-${dateTime.year}-${dateTime.hour}-${dateTime.minute}-${dateTime.second} ";
   await Firebase.initializeApp();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  String? tokenLogin = CashHelper.getData(key: 'loginToken');
+  print(tokenLogin);
+  if(tokenLogin != null) {
+    await FirebaseMessaging.instance.subscribeToTopic('abc');
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    await messaging.requestPermission(
+      alert: (tokenLogin != null) ? true : false,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: (tokenLogin != null) ? true : false,
+    );
+    FirebaseMessaging.onMessage.listen((event) {
+      Fluttertoast.showToast(
+          msg: 'New Notification From abcTdawl',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      TradeCubit()..postNotificationData(event: event, formate: dateTime);
+      print(dateTime);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((event)
+    {
+      Fluttertoast.showToast(
+          msg: 'New Notification From abcTdawl',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      print(event.data.toString());
+      TradeCubit()..postNotificationData(event: event, formate: dateTime);
+      print(dateTime);
+    });
+  }else{
+    FirebaseMessaging.instance.unsubscribeFromTopic('abc');
+  }
 
-await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  FirebaseMessaging.instance.subscribeToTopic('topic');
-  String? token = await FirebaseMessaging.instance.getToken();
-  FirebaseMessaging.onMessage.listen((event) {
-    Fluttertoast.showToast(
-        msg: '${event.notification!.body}',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0);
-        TradeCubit()..postNotificationData(event: event, formate: formate);
-        print(formate);
-  });
-  FirebaseMessaging.onMessageOpenedApp.listen((event)
-  {
-    Fluttertoast.showToast(
-        msg: '${event.notification!.body}',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0);
-    print(event.data.toString());
-    TradeCubit()..postNotificationData(event: event, formate: formate);
-    print(formate);
-  });
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  print('token $token');
+
   runApp(MyApp());
 }
 
@@ -88,8 +80,9 @@ class MyApp extends StatelessWidget {
                 ..getContactInfo()
                 ..getEvaluationLong()
                 ..getEvaluationMonth()
-                ..getEvaluationShort()
+                ..getEvaluationShort(CreateInvoiceSuccess: true)
                 ..getNotification()
+                ..getSlider()
         )
       ],
       child: MaterialApp(

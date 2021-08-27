@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class InstantRecommendations extends StatelessWidget {
     return BlocConsumer<TradeCubit, TradeStates>(
         listener: (context, state){},
       builder: (context, state){
+        var token = CashHelper.getData(key: 'loginToken');
           var performance = TradeCubit.get(context);
           return Directionality(
             textDirection: TextDirection.rtl,
@@ -22,6 +24,7 @@ class InstantRecommendations extends StatelessWidget {
                 key: _scaffoldKey,
                 drawer: defaultDrawer(context: context),
                 appBar: defaultHomeAppBar(
+                  token: token,
                     context: context,
                     scaffoldKey: _scaffoldKey,
                     text: 'توصيات لحظية'

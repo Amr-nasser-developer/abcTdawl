@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:abc_trade/layout/home_screen.dart';
 import 'package:abc_trade/modules/user/user_Screen.dart';
@@ -21,6 +22,7 @@ class Profile extends StatelessWidget {
             text: 'LogOut',
             function: (){
             CashHelper.deleteData(key: 'loginToken').then((value){
+              FirebaseMessaging.instance.unsubscribeFromTopic('abc');
               defaultFinishNavigate(context: context, widget: HomeScreen(widget: UserScreen(),));
             });
             }

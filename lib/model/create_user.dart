@@ -14,8 +14,10 @@ class User{
   String? phone;
   String? password;
   String? email;
+  String? token;
   var id;
   User.fromJson(Map<String, dynamic> json){
+    token = json['token'];
     name = json['name'];
     phone = json['phone'];
     id = json['id'];

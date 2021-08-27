@@ -1,3 +1,4 @@
+import 'package:abc_trade/shared/local/shared.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,12 +16,14 @@ class NewsDetailes extends StatelessWidget {
         var width = MediaQuery.of(context).size.width;
         final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
         var newsDetail = TradeCubit.get(context);
+        var token = CashHelper.getData(key: 'loginToken');
            return Directionality(
              textDirection: TextDirection.rtl,
              child: Scaffold(
                  key: _scaffoldKey,
                  drawer: defaultDrawer(),
                  appBar: defaultHomeAppBar(
+                   token: token,
                      context: context,
                      text: 'تفاصيل الخبر',
                      scaffoldKey: _scaffoldKey

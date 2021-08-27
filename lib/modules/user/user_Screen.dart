@@ -1,4 +1,5 @@
 import 'package:conditional_builder/conditional_builder.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -29,7 +30,7 @@ class _UserScreenState extends State<UserScreen> {
           if(state is TradeLoginSuccess){
             if(TradeCubit.get(context).login!.status == false) {
               Fluttertoast.showToast(
-                  msg: '${TradeCubit.get(context).login!.ERRORS}',
+                  msg: 'البريد الإلكترونى او الباسورد غير صحيحين',
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 3,
@@ -39,9 +40,20 @@ class _UserScreenState extends State<UserScreen> {
             }else {
               CashHelper.setData(key: 'loginToken', value: TradeCubit.get(context).login!.user!.token).then((value){
                 print('Login Token Saved Success');
+                FirebaseMessaging.instance.subscribeToTopic('abc');
                 defaultFinishNavigate(context: context,
                     widget: HomeScreen(widget: UserScreen(),));
               });
+            }
+            if(state is TradeLoginError){
+              Fluttertoast.showToast(
+                  msg: 'البريد الإلكترونى او الباسورد غير صحيحين',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 3,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
             }
           }
         },

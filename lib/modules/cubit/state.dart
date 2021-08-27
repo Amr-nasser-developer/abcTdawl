@@ -1,6 +1,14 @@
 abstract class TradeStates{}
 class TradeInitial extends TradeStates{}
 
+//slider
+class TradeSliderLoading extends TradeStates{}
+class TradeSliderSuccess extends TradeStates{}
+class TradeSliderError extends TradeStates{
+  final error;
+  TradeSliderError(this.error);
+}
+
 //login screen
 class TradeLoginLoading extends TradeStates{}
 class TradeLoginSuccess extends TradeStates{}
@@ -35,6 +43,13 @@ class TradeSaveDeviceTokenSuccess extends TradeStates{}
 class TradeSaveDeviceTokenError extends TradeStates{
   final error;
   TradeSaveDeviceTokenError(this.error);
+}
+//getUserToken screen
+class TradeGetUserTokenLoading extends TradeStates{}
+class TradeGetUserTokenSuccess extends TradeStates{}
+class TradeGetUserTokenError extends TradeStates{
+  final error;
+  TradeGetUserTokenError(this.error);
 }
 //register screen
 class TradeRegisterLoading extends TradeStates{}
