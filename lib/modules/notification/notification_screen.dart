@@ -1,5 +1,4 @@
 import 'package:abc_trade/shared/local/shared.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,56 +21,60 @@ class NotificationScreen extends StatelessWidget {
           },
       builder: (context, state){
             var width = MediaQuery.of(context).size.width;
-            return Scaffold(
-                key: _scaffoldKey,
-                drawer: defaultDrawer(context: context),
-                appBar: AppBar(
-                  leading: IconButton(
-                      onPressed: (){},
-                      icon: Image.asset('assets/images/noti.png')
-                  ),
-                  title:Text('الاشعارات') ,
-                  actions: [
-                    IconButton(
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: Scaffold(
+                  key: _scaffoldKey,
+                  drawer: defaultDrawer(context: context),
+                  appBar: AppBar(
+                    leading:  IconButton(
                         onPressed: (){
                           _scaffoldKey.currentState!.openDrawer();
                         },
                         icon: Image.asset('assets/images/menu.png')
-                    )
-                  ],
-                  centerTitle: true,
-                  backgroundColor: HexColor('#00AEAC'),
-                  toolbarHeight: 50,
-                ),
-                body: ConditionalBuilder(
-                    condition: state is! TradeGetNotificationError,
-                    builder: (context)=> ConditionalBuilder(
-                        condition: state is! TradeGetNotificationLoading,
-                        builder: (context)=> ConditionalBuilder(
-                            condition: TradeCubit.get(context).notification != null,
-                            builder: (context)=> SingleChildScrollView(
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: ListView.separated(
-                                    shrinkWrap: true,
-                                    physics: BouncingScrollPhysics(),
-                                    itemBuilder: (context, index)=> defaultbuildNotification(
-                                        sourceImage: 'assets/images/noti.png',
-                                        noti: TradeCubit.get(context).notification![index],
-                                      width : width,
-                                        context :context
-                                    ) ,
-                                    separatorBuilder: (context, index)=> SizedBox(height: 10,),
-                                    itemCount: TradeCubit.get(context).notification!.length,
+                    ),
+                    title:Text('الاشعارات') ,
+                    actions: [
+                      IconButton(
+                          onPressed: (){},
+                          icon: Image.asset('assets/images/noti.png')
+                      ),
+
+                    ],
+                    centerTitle: true,
+                    backgroundColor: HexColor('#00AEAC'),
+                    toolbarHeight: 50,
+                  ),
+                  body: ConditionalBuilder(
+                      condition: state is! TradeGetNotificationError,
+                      builder: (context)=> ConditionalBuilder(
+                          condition: state is! TradeGetNotificationLoading,
+                          builder: (context)=> ConditionalBuilder(
+                              condition: TradeCubit.get(context).notification != null,
+                              builder: (context)=> SingleChildScrollView(
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: BouncingScrollPhysics(),
+                                      itemBuilder: (context, index)=> defaultbuildNotification(
+                                          sourceImage: 'assets/images/noti.png',
+                                          noti: TradeCubit.get(context).notification![index],
+                                        width : width,
+                                          context :context
+                                      ) ,
+                                      separatorBuilder: (context, index)=> SizedBox(height: 10,),
+                                      itemCount: TradeCubit.get(context).notification!.length,
+                                  ),
                                 ),
                               ),
-                            ),
-                          fallback: (context)=> Center(child: Text('No Notification Found'),),
-                        ),
-                      fallback: (context)=>Center(child: Text('No Notification Found')),
-                    ),
-                  fallback: (context)=> Center(child: Text('!!! Check Your Internet'),),
-                )
+                            fallback: (context)=> Center(child: Text('No Notification Found'),),
+                          ),
+                        fallback: (context)=>Center(child: Text('No Notification Found')),
+                      ),
+                    fallback: (context)=> Center(child: Text('!!! Check Your Internet'),),
+                  )
+              ),
             );
       },
       ),

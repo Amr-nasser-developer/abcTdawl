@@ -20,9 +20,9 @@ class DiscriminationScreen extends StatelessWidget {
           text: 'ما يميزنا',
           scaffoldKey: _scaffoldKey
         ),
-        body: Padding(
-          padding: EdgeInsets.only(top: 30.0),
-          child: Center(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(top: 30.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -39,8 +39,8 @@ class DiscriminationScreen extends StatelessWidget {
                           offset: Offset(0, 3), // changes position of shadow
                         ),
                       ],
-                    borderRadius: BorderRadius.circular(25.0),
-                    color: Colors.black
+                      borderRadius: BorderRadius.circular(25.0),
+                      color: Colors.black
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,38 +51,57 @@ class DiscriminationScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 30.0,),
-                RowMeza(),
-                SizedBox(height: 5.0,),
-                RowMeza(),
-                SizedBox(height: 5.0,),
-                RowMeza(),
-                SizedBox(height: 5.0,),
-                RowMeza(),
-                SizedBox(height: 5.0,),
-                RowMeza(),
-                SizedBox(height: 5.0,),
+                meza(
+                  name: 'الخبره',
+                  text: 'نمتلك فريق عمل متميز ذو خبره كبيره فى المجال بشهادة المحللين و العملاء و بنتائجهم المتميزه'
+                ),
+                  SizedBox(height: 5,),
+                meza(
+                  name: 'المصداقيه',
+                  text: 'تم تأسيس الشركه لهدف أساسى من المصداقيه التامه مع العملاء بما يحقق النجاح المشترك'
+                ),
+                SizedBox(height: 5,),
+                meza(
+                  name: 'القياده',
+                  text: 'مؤسسى الشركه و فريق االعمل حاصلون على أعلى الشهادات بالإضافه الى الخبره و سابقة الاعمال'
+                ),
+                SizedBox(height: 5,),
+                meza(
+                  name: 'المساءلة',
+                  text: 'نتحمــل المسؤولية عــن أدائنا أمام الجميــع، ونحــن علــى اســتعداد لمواجهــة المســاءلة عــن كافة تصرفاتنا.'
+                ),
+                SizedBox(height: 5,),
+                meza(
+                  name: 'التواصل والإيجابية مع العميل',
+                  text: 'نركـــز دومـا علـى تحقيـــق الأهـداف، ونسـعى لإحــداث فـرق لــدى العمــلاء، ونجتهـد لتحقيـق اعلى النتائج مــن خــلال عملنـــا لتحقيـــق تأثير مســـتدام علــى مســـتوى الجهـــات ذات العلاقـــة، فيمـــا نمـــارس التزامنــا الجـــاد بمبـــادرات الاســتدامة المؤسسية والمسؤولية المجتمعيــــة.'
+                ),
+                SizedBox(height: 10,),
               ],
             ),
           ),
-        ),
+        )
       ),
     );
   }
-  Widget RowMeza()=>Padding(
-    padding: EdgeInsets.only(right: 40),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('ميزه 1', style: TextStyle(fontWeight: FontWeight.bold),),
-        Spacer(),
-        Text('ميزه 2', style: TextStyle(fontWeight: FontWeight.bold)),
-        Spacer(),
-        Text('ميزه 3', style: TextStyle(fontWeight: FontWeight.bold)),
-        Spacer(),
-        Text('ميزه 4', style: TextStyle(fontWeight: FontWeight.bold)),
-        Spacer(),
-      ],
+  Widget meza({name, text})=>Container(
+    width: 400,
+    child: Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+            Column(
+              children: [
+                Text(name, style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),),
+                Container(
+                  width: 200,
+                    child: Text( text,textAlign: TextAlign.center,)),
+
+              ],
+            )
+        ],
+      ),
     ),
   );
 }
