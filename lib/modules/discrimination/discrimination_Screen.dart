@@ -22,51 +22,57 @@ class DiscriminationScreen extends StatelessWidget {
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 30.0),
-          child: Column(
-            children: [
-              Container(
-                height: 200,
-                width: 300,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3), // changes position of shadow
-                      ),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: 200,
+                  width: 300,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    borderRadius: BorderRadius.circular(25.0),
+                    color: Colors.black
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/graph.png')
                     ],
-                  borderRadius: BorderRadius.circular(25.0),
-                  color: Colors.black
+                  ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/images/graph.png')
-                  ],
-                ),
-              ),
-              SizedBox(height: 30.0,),
-              RowMeza(),
-              SizedBox(height: 5.0,),
-              RowMeza(),
-              SizedBox(height: 5.0,),
-              RowMeza(),
-              SizedBox(height: 5.0,),
-              RowMeza(),
-              SizedBox(height: 5.0,),
-              RowMeza(),
-              SizedBox(height: 5.0,),
-            ],
+                SizedBox(height: 30.0,),
+                RowMeza(),
+                SizedBox(height: 5.0,),
+                RowMeza(),
+                SizedBox(height: 5.0,),
+                RowMeza(),
+                SizedBox(height: 5.0,),
+                RowMeza(),
+                SizedBox(height: 5.0,),
+                RowMeza(),
+                SizedBox(height: 5.0,),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
   Widget RowMeza()=>Padding(
-    padding: const EdgeInsets.only(left: 40),
+    padding: EdgeInsets.only(right: 40),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text('ميزه 1', style: TextStyle(fontWeight: FontWeight.bold),),
         Spacer(),

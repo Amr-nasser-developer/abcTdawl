@@ -10,8 +10,9 @@ import 'package:abc_trade/shared/components.dart';
 
 class RecommendationsScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String? name;
-  RecommendationsScreen(this.name);
+  String? type;
+  var id;
+  RecommendationsScreen(this.type, this.id);
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TradeCubit, TradeStates>(
@@ -26,7 +27,7 @@ class RecommendationsScreen extends StatelessWidget {
             appBar: defaultHomeAppBar(
               token: token,
                 context: context,
-                text: ' توصيات $name',
+                text: ' توصيات $type',
                 scaffoldKey: _scaffoldKey
             ),
             drawer: defaultDrawer(context: context),
@@ -43,10 +44,10 @@ class RecommendationsScreen extends StatelessWidget {
                               shrinkWrap: true,
                                 physics: BouncingScrollPhysics(),
                                 itemBuilder: (context, index)=> defaultBuildRecommendation(
-                                  reco.recommendations[index]
+                                  reco.recommendationsList[index]
                                 ),
                                 separatorBuilder: (context, index)=> SizedBox(height: 5.0,),
-                                itemCount: reco.recommendations.length
+                                itemCount: reco.recommendationsList.length
                             ),
                             SizedBox(
                               height: 20.0,
@@ -61,7 +62,7 @@ class RecommendationsScreen extends StatelessWidget {
                                     function: ()
                                     {
                                       if(reco.currentPageRecommendation <= reco.totalPageRecommendation)
-                                        reco.getRecommendationMore();
+                                        reco.getRecommendationMore(id: id ,type: type );
                                     },
                                   ),
                                 if(state is TradeNewsMoreLoading)

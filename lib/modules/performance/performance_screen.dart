@@ -82,18 +82,38 @@ class _PerformanceRateScreenState extends State<PerformanceRateScreen> {
                           value: _mySelectionMonth
                       ),
                       SizedBox(height: 5,),
-                      defaultMaterialButton(
-                          text: 'بحث',
-                          function: (){
-                            print(_mySelectionMonth);
-                            TradeCubit.get(context).getEvaluationShort(
-                              year: _mySelectionYear,
-                              month: _mySelectionMonth,
-                              CreateInvoiceSuccess: true
-                            );
-                          print(_mySelectionMonth);
-                            print(_mySelectionYear);
-                          }
+                      ConditionalBuilder(
+                        condition: state is! TradePerformanceShortError ,
+                        builder: (context)=> ConditionalBuilder(
+                            condition: (state is! TradePerformanceShortLoading),
+                            builder: (context)=>defaultMaterialButton(
+                                text: 'بحث',
+                                function: (){
+                                  print(_mySelectionMonth);
+                                  TradeCubit.get(context).getEvaluationShort(
+                                      year: _mySelectionYear,
+                                      month: _mySelectionMonth,
+                                      createEvaluationShortSuccess: true
+                                  );
+                                  print(_mySelectionMonth);
+                                  print(_mySelectionYear);
+                                }
+                            ),
+                          fallback: (context)=> Center(child: CircularProgressIndicator(),),
+                        ),
+                        fallback: (context)=>defaultMaterialButton(
+                            text: 'بحث',
+                            function: (){
+                              print(_mySelectionMonth);
+                              TradeCubit.get(context).getEvaluationShort(
+                                  year: _mySelectionYear,
+                                  month: _mySelectionMonth,
+                                  createEvaluationShortSuccess: true
+                              );
+                              print(_mySelectionMonth);
+                              print(_mySelectionYear);
+                            }
+                        ),
                       ),
                       SizedBox(height: 15.0,),
                       ConditionalBuilder(

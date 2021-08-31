@@ -47,11 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textColor: Colors.white,
                     fontSize: 16.0);
               }else{
-                CashHelper.setData(key: 'userId', value: TradeCubit.get(context).registers!.user!.id).then((value){
                   defaultFinishNavigate(widget: HomeScreen(widget: UserScreen(),),context: context);
-                }).catchError((e){
-                  print(e.toString());
-                });
               }
           }
         },

@@ -23,6 +23,7 @@ class Profile extends StatelessWidget {
             function: (){
             CashHelper.deleteData(key: 'loginToken').then((value){
               FirebaseMessaging.instance.unsubscribeFromTopic('abc');
+              CashHelper.deleteData(key: 'userId');
               defaultFinishNavigate(context: context, widget: HomeScreen(widget: UserScreen(),));
             });
             }
