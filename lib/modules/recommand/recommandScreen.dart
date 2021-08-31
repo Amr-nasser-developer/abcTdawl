@@ -1,3 +1,5 @@
+import 'package:abc_trade/layout/home_screen.dart';
+import 'package:abc_trade/modules/user/user_Screen.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,13 +12,14 @@ import 'package:abc_trade/shared/local/shared.dart';
 
 class RecommandScreen extends StatelessWidget {
   var id = CashHelper.getData(key: 'userId');
+  var token = CashHelper.getData(key: 'loginToken');
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TradeCubit, TradeStates>(
       listener: (context, state){},
       builder: (context, state){
-        var token = CashHelper.getData(key: 'loginToken');
+        print('userId => $id');
        var recommand = TradeCubit.get(context);
         return Directionality(
           textDirection: TextDirection.rtl,
@@ -95,11 +98,12 @@ class RecommandScreen extends StatelessWidget {
                   text: 'استعراض',
                   function: () {
                     TradeCubit.get(context).getRecommendation(
+                      createRecommendationSuccess: true,
                       id: id,
                       type: '${recommand['title']}',
                     );
                     defaultNavigateTo(
-                        context: context, widget: RecommendationsScreen('${recommand['title']}'));
+                        context: context, widget: (token != null)? RecommendationsScreen('${recommand['title']}', id) : HomeScreen(widget: UserScreen(),));
                   })
             ],
           ),

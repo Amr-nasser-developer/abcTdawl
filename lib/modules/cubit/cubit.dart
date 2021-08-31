@@ -1,7 +1,6 @@
 import 'package:abc_trade/model/user_token.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:abc_trade/model/create_user.dart';
 import 'package:abc_trade/model/login.dart';
@@ -106,8 +105,11 @@ class TradeCubit extends Cubit<TradeStates>{
   }
   int totalPageRecommendation= 0;
   int currentPageRecommendation= 1;
-  List<dynamic> recommendations = [];
-  getRecommendation({id, type}){
+  List<dynamic> recommendationsList = [];
+  getRecommendation({bool createRecommendationSuccess = false, id, type}){
+    if(createRecommendationSuccess == true){
+      currentPageRecommendation = 1;
+    }
     emit(TradeRecommandLoading());
     DioHelper.getData(
       url: 'recommendations',
@@ -115,11 +117,11 @@ class TradeCubit extends Cubit<TradeStates>{
         'id' : id,
         'type' : type,
         'per_page' : 10,
-        'current_page' : currentPageRecommendation
+        'page' : currentPageRecommendation
       }
     ).then((value){
       emit(TradeRecommandSuccess());
-      recommendations = value.data['RECOMMENDATIONS']['data'];
+      recommendationsList = value.data['RECOMMENDATIONS']['data'];
       currentPageRecommendation++;
       totalPageRecommendation = value.data['RECOMMENDATIONS']['last_page'];
       print(value.data);
@@ -133,11 +135,14 @@ class TradeCubit extends Cubit<TradeStates>{
     DioHelper.getData(
         url: 'recommendations',
         query: {
-          'current_page' : currentPageRecommendation
+          'id' : id,
+          'type' : type,
+          'per_page' : 10,
+          'page' : currentPageRecommendation
         }
     ).then((value){
       emit(TradeRecommandMoreSuccess());
-      recommendations.addAll(value.data['RECOMMENDATIONS']['data']);
+      recommendationsList.addAll(value.data['RECOMMENDATIONS']['data']);
       currentPageRecommendation++;
       print(value.data);
     }).catchError((e){
@@ -225,8 +230,8 @@ class TradeCubit extends Cubit<TradeStates>{
   int currentPageShort = 1;
   int totalPageShort = 0;
   Rate? rate;
-  getEvaluationShort({bool CreateInvoiceSuccess = false, month, year}){
-    if(CreateInvoiceSuccess == true){
+  getEvaluationShort({bool createEvaluationShortSuccess = false, month, year}){
+    if(createEvaluationShortSuccess == true){
       currentPageShort = 1;
     }
     emit(TradePerformanceShortLoading());

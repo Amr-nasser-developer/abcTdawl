@@ -39,6 +39,7 @@ class _UserScreenState extends State<UserScreen> {
                   fontSize: 16.0);
             }else {
               CashHelper.setData(key: 'loginToken', value: TradeCubit.get(context).login!.user!.token).then((value){
+              CashHelper.setData(key: 'userId', value: TradeCubit.get(context).login!.user!.id);
                 print('Login Token Saved Success');
                 FirebaseMessaging.instance.subscribeToTopic('abc');
                 defaultFinishNavigate(context: context,

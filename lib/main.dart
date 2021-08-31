@@ -73,6 +73,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (BuildContext context) => TradeCubit()
+                ..getSlider()
+                ..getNotification()
                 ..getPackage()
                 ..getService()
                 ..getNews()
@@ -80,9 +82,7 @@ class MyApp extends StatelessWidget {
                 ..getContactInfo()
                 ..getEvaluationLong()
                 ..getEvaluationMonth()
-                ..getEvaluationShort(CreateInvoiceSuccess: true)
-                ..getNotification()
-                ..getSlider()
+                ..getEvaluationShort(createEvaluationShortSuccess: true)
         )
       ],
       child: MaterialApp(

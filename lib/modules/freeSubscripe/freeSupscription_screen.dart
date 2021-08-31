@@ -113,14 +113,7 @@ class _FreeSubscriptionState extends State<FreeSubscription> {
                                ),
                              fallback: (context)=> Center(child: CircularProgressIndicator(),),
                            ),
-                            SizedBox(height: 10,),
-                            TextButton(
-                                onPressed: (){},
-                                child: Text('نسيت كلمه المرور ؟',
-                                  style: TextStyle(fontSize: 13.0 , fontWeight: FontWeight.bold, color: HexColor('#D11212')),
-                                )
-                            ),
-                            SizedBox(height: 10.0),
+                            SizedBox(height: 20.0),
                             Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
