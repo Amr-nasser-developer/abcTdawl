@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:abc_trade/modules/cubit/cubit.dart';
 import 'package:abc_trade/modules/cubit/state.dart';
 import 'package:abc_trade/shared/components.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactInfoScreen extends StatelessWidget {
@@ -42,14 +43,11 @@ class ContactInfoScreen extends StatelessWidget {
                         child: ListView.separated(
                           shrinkWrap: true,
                             physics: BouncingScrollPhysics(),
-                            itemBuilder: (context, index)=> defaultContactInfo(
+                            itemBuilder: (context, index)=> defsultBuildContactInfo(
                               width,
                               contactInfo.contactInfo[index]
                             ),
-                            separatorBuilder: (context, index)=> Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Divider(color: Colors.grey[400],),
-                            ),
+                            separatorBuilder: (context, index)=> Spacer(),
                             itemCount: contactInfo.contactInfo.length
                         ),
                       ),
@@ -64,107 +62,70 @@ class ContactInfoScreen extends StatelessWidget {
       },
     );
   }
-  Widget defaultContactInfo(width, contactInfo)=>Container(
-    padding: EdgeInsetsDirectional.all(10.0),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10.0),
-      boxShadow: [
+
+  Widget defsultBuildContactInfo(width,contactInfo)=> Column(
+    children: [
+      defaultContainerContactInfo(
+        icon: Icons.phone,
+        width: width,
+        function: (){
+          launch("tel:${contactInfo['phone']}");
+        },
+        text: '${contactInfo['phone']}'
+      ),
+      SizedBox(height: 40,),
+      defaultContainerContactInfo(
+          icon: Icons.location_on,
+          width: width,
+          text: '${contactInfo['address']}'
+      ),
+      SizedBox(height: 40,),
+      defaultContainerContactInfo(
+          icon: Icons.watch_later_outlined,
+          width: width,
+          text: '${contactInfo['work_time']}'
+      ),
+      SizedBox(height: 40,),
+      defaultContainerContactInfo(
+          icon: Icons.mail,
+          width: width,
+          function: (){
+            _launchEmail('${contactInfo['email']}');
+          },
+          text: '${contactInfo['email']}'
+      ),
+    ],
+  );
+  Widget defaultContainerContactInfo({width, function, icon, text }) => GestureDetector(
+    onTap: function,
+    child: Container(
+      height: 100,
+      width: width * 0.8,
+      decoration: BoxDecoration(boxShadow: [
         BoxShadow(
-          color: Colors.black38, spreadRadius: 0, blurRadius: 0,)
-      ],
-    ),
-    width: width * 0.9 ,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text('رقم الموبيل : '),Spacer(),
-            TextButton(
-              onPressed: (){
-                launch("tel:${contactInfo['phone']}");
-              },
-                child: Text('${contactInfo['phone']}')),
-          ],
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 5,
+          blurRadius: 7,
+          offset: Offset(0, 3), // changes position of shadow
         ),
-        SizedBox(height: 30.0,),
-        Row(
-          children: [
-            Text('العنوان : '), Spacer(),
-            Text('${contactInfo['address']} '),
-          ],
-        ),
-        SizedBox(height: 40.0,),
-        Row(
-          children: [
-            Text('مواعيد العمل : '),Spacer(),
-            Text('${contactInfo['work_time']}'),
-          ],
-        ),
-        SizedBox(height: 40.0,),
-        Row(
-          children: [
-            Text('البريد الالكترونى : '),Spacer(),
-            TextButton(child: SelectableText('${contactInfo['email']}'),
-            onPressed: (){
-              _launchEmail('${contactInfo['email']}');
-            },
-            ),
-          ],
-        ),
-        SizedBox(height: 20.0,),
-        Row(
-          children: [
-            Text('الفيسبوك : '),Spacer(),
-            TextButton(
-                onPressed: (){
-                  _launchURL('${contactInfo['facebook']}');
-                },
-                child:Text('${contactInfo['facebook']}')
-            )
-          ],
-        ),
-        SizedBox(height: 10.0,),
-        Row(
-          children: [
-            Text('الانسنجرام : '),Spacer(),
-            TextButton(
-                onPressed: (){
-                  _launchURL('${contactInfo['instagram']}');
-                },
-                child:Text('${contactInfo['instagram']}')
-            )
-          ],
-        ),
-        SizedBox(height: 10.0,),
-        Row(
-          children: [
-            Text('تويتر : '),Spacer(),
-            TextButton(
-                onPressed: (){
-                  _launchURL('${contactInfo['twiiter']}');
-                },
-                child:Text('${contactInfo['twiiter']}')
-            )
-          ],
-        ),
-        SizedBox(height: 10.0,),
-        Row(
-          children: [
-            Text('يوتيوب : '),Spacer(),
-            TextButton(
-              onPressed: (){
-                _launchURL('${contactInfo['youtube']}');
-            },
-              child:  Text('${contactInfo['youtube']}'),)
-          ],
-        ),
-      ],
+      ], color: HexColor('#00AEAC'), borderRadius: BorderRadius.circular(0.0)),
+      padding: EdgeInsets.only(top: 15),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon,color: Colors.white,size: 32,),
+          SizedBox(
+            height: 5.0,
+          ),
+          Text(text, style: TextStyle(color: Colors.white),),
+        ],
+      ),
     ),
   );
   void _launchEmail(url)async {
-    final uri = 'mailto:$url?subject=Greetings&body=Hello%20World';
+    final uri = 'mailto:$url';
     if (await canLaunch(uri)) {
       await launch(uri);
     } else {
