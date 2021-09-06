@@ -1,5 +1,3 @@
-import 'package:abc_trade/layout/home_screen.dart';
-import 'package:abc_trade/modules/user/user_Screen.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,11 +97,10 @@ class RecommandScreen extends StatelessWidget {
                   function: () {
                     TradeCubit.get(context).getRecommendation(
                       createRecommendationSuccess: true,
-                      id: id,
-                      type: '${recommand['title']}',
+                      type: '${recommand['id']}',
                     );
                     defaultNavigateTo(
-                        context: context, widget: (token != null)? RecommendationsScreen('${recommand['title']}', id) : HomeScreen(widget: UserScreen(),));
+                        context: context, widget: RecommendationsScreen(typeId: '${recommand['id']}',typeName: '${recommand['title']}',));
                   })
             ],
           ),

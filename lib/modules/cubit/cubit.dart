@@ -114,7 +114,6 @@ class TradeCubit extends Cubit<TradeStates>{
     DioHelper.getData(
       url: 'recommendations',
       query: {
-        'id' : id,
         'type' : type,
         'per_page' : 10,
         'page' : currentPageRecommendation
@@ -130,12 +129,11 @@ class TradeCubit extends Cubit<TradeStates>{
       emit(TradeRecommandError(e.toString()));
     });
   }
-  getRecommendationMore({id, type}){
+  getRecommendationMore({type}){
     emit(TradeRecommandMoreLoading());
     DioHelper.getData(
         url: 'recommendations',
         query: {
-          'id' : id,
           'type' : type,
           'per_page' : 10,
           'page' : currentPageRecommendation
@@ -414,11 +412,10 @@ class TradeCubit extends Cubit<TradeStates>{
     });
   }
    var id ;
-  postNotificationData({event, formate}){
+  postNotificationData({body, formate}){
     emit(TradePostNotificationLoading());
     FirebaseFirestore.instance.collection('notification').add({
-      'body' :  event.notification!.body,
-      'title' : event.notification!.title,
+      'body' :  body,
       'time' : formate
     }).then((value){
       id = value.id;

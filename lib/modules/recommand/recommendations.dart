@@ -10,9 +10,9 @@ import 'package:abc_trade/shared/components.dart';
 
 class RecommendationsScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String? type;
-  var id;
-  RecommendationsScreen(this.type, this.id);
+  String? typeName;
+  var typeId;
+  RecommendationsScreen({this.typeName, this.typeId});
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TradeCubit, TradeStates>(
@@ -27,7 +27,7 @@ class RecommendationsScreen extends StatelessWidget {
             appBar: defaultHomeAppBar(
               token: token,
                 context: context,
-                text: ' توصيات $type',
+                text: ' توصيات $typeName',
                 scaffoldKey: _scaffoldKey
             ),
             drawer: defaultDrawer(context: context),
@@ -62,7 +62,7 @@ class RecommendationsScreen extends StatelessWidget {
                                     function: ()
                                     {
                                       if(reco.currentPageRecommendation <= reco.totalPageRecommendation)
-                                        reco.getRecommendationMore(id: id ,type: type );
+                                        reco.getRecommendationMore(type: typeId);
                                     },
                                   ),
                                 if(state is TradeNewsMoreLoading)
@@ -105,19 +105,6 @@ class RecommendationsScreen extends StatelessWidget {
             children: [
               Text('+ جديده', style: TextStyle(color: Colors.white, fontSize: 14),),
               Spacer(),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Text('${reco['rate']}%', style: TextStyle(color: HexColor('#FF6565')),),
-                    Icon(Icons.arrow_downward_sharp, color: HexColor('#FF6565'),)
-                  ],
-                ),
-              ),
             ],
           ),
         ),
