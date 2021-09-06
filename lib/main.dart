@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,14 @@ import 'package:abc_trade/shared/local/shared.dart';
 import 'package:abc_trade/shared/obServerCubit.dart';
 import 'package:abc_trade/shared/remote/dio_helper.dart';
 import 'package:abc_trade/view/splash_screen.dart';
-
+var dateTime = DateTime.now();
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async
+{
+  await Firebase.initializeApp();
+  print('on background message');
+  print(message.notification!.body.toString());
+  TradeCubit()..postNotificationData(body: message.notification!.body.toString(), formate: dateTime );
+}
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
@@ -20,8 +26,6 @@ void main() async{
   await Firebase.initializeApp();
   String? tokenLogin = CashHelper.getData(key: 'loginToken');
   print(tokenLogin);
-  if(tokenLogin != null) {
-    await FirebaseMessaging.instance.subscribeToTopic('abc');
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.requestPermission(
       alert: (tokenLogin != null) ? true : false,
@@ -41,7 +45,7 @@ void main() async{
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
-      TradeCubit()..postNotificationData(event: event, formate: dateTime);
+      TradeCubit()..postNotificationData(body: event.notification!.body.toString(), formate: dateTime);
       print(dateTime);
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event)
@@ -54,14 +58,11 @@ void main() async{
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
-      print(event.data.toString());
-      TradeCubit()..postNotificationData(event: event, formate: dateTime);
+      print('data => ${event.data.toString()}');
+      TradeCubit()..postNotificationData(body: event.notification!.body.toString(), formate: dateTime);
       print(dateTime);
     });
-  }else{
-    FirebaseMessaging.instance.unsubscribeFromTopic('abc');
-  }
-
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   runApp(MyApp());
 }
